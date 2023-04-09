@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, window::WindowResolution};
 
 const NUM_COLUMNS: usize = 20;
 const NUM_ROWS: usize = 20;
@@ -117,7 +117,6 @@ fn create_battlefield_system(
     );
     let tiles_atlas_handle = texture_atlases.add(tiles_atlas);
 
-    const SCALE: f32 = 4.0;
     const BATTLEFIELD_WIDTH_IN_TILES: usize = 13;
     const BATTLEFIELD_HEIGHT_IN_TILES: usize = 6;
     let tile_map: [[Tile; BATTLEFIELD_WIDTH_IN_TILES]; BATTLEFIELD_HEIGHT_IN_TILES] = [
@@ -228,11 +227,10 @@ fn create_battlefield_system(
                 sprite: TextureAtlasSprite::new(col.index),
                 transform: Transform {
                     translation: Vec3 {
-                        x: SCALE * (x as f32 * TILE_SIZE - WIDTH_CENTER_OFFSET),
-                        y: SCALE * (y as f32 * TILE_SIZE - HEIGHT_CENTER_OFFSET),
+                        x: x as f32 * TILE_SIZE - WIDTH_CENTER_OFFSET,
+                        y: y as f32 * TILE_SIZE - HEIGHT_CENTER_OFFSET,
                         z: 0.0,
                     },
-                    scale: Vec3::splat(SCALE),
                     ..default()
                 },
                 ..default()
@@ -243,7 +241,20 @@ fn create_battlefield_system(
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .insert_resource(Msaa::Off)
+        .add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: "Strategy Game in Rust".to_string(),
+                        resolution: WindowResolution::new(960.0, 540.0)
+                            .with_scale_factor_override(4.0),
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .set(ImagePlugin::default_nearest()),
+        )
         .add_startup_system(create_battlefield_system)
         .run();
 }
