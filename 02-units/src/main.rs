@@ -107,6 +107,18 @@ impl Battlefield {
             ],
         }
     }
+
+    pub fn to_battlefield_coordinates(&self, x: f32, y: f32, z: f32) -> Vec3 {
+        let half_tile_size: f32 = self.tile_size / 2.0;
+        let half_battlefield_width_in_pixels: f32 =
+            BATTLEFIELD_WIDTH_IN_TILES as f32 * self.tile_size / 2.0;
+        let half_battlefield_height_in_pixels: f32 =
+            BATTLEFIELD_HEIGHT_IN_TILES as f32 * self.tile_size / 2.0;
+        let width_center_offset: f32 = half_battlefield_width_in_pixels - half_tile_size;
+        let height_center_offset: f32 = half_battlefield_height_in_pixels - half_tile_size;
+
+        Vec3::new(x - width_center_offset, y - height_center_offset, z)
+    }
 }
 
 const BATTLEFIELD_NUM_COLUMNS: usize = 20;
@@ -206,13 +218,6 @@ impl Tile {
     }
 }
 
-const TILE_SIZE: f32 = 16.0;
-const HALF_TILE_SIZE: f32 = TILE_SIZE / 2.0;
-const HALF_BATTLEFIELD_WIDTH_IN_PIXELS: f32 = BATTLEFIELD_WIDTH_IN_TILES as f32 * TILE_SIZE / 2.0;
-const HALF_BATTLEFIELD_HEIGHT_IN_PIXELS: f32 = BATTLEFIELD_HEIGHT_IN_TILES as f32 * TILE_SIZE / 2.0;
-const WIDTH_CENTER_OFFSET: f32 = HALF_BATTLEFIELD_WIDTH_IN_PIXELS - HALF_TILE_SIZE;
-const HEIGHT_CENTER_OFFSET: f32 = HALF_BATTLEFIELD_HEIGHT_IN_PIXELS - HALF_TILE_SIZE;
-
 fn create_battlefield_system(
     battlefield: Res<Battlefield>,
     mut commands: Commands,
@@ -238,11 +243,11 @@ fn create_battlefield_system(
                 texture_atlas: tiles_atlas_handle.clone(),
                 sprite: TextureAtlasSprite::new(col.index),
                 transform: Transform {
-                    translation: Vec3 {
-                        x: x as f32 * battlefield.tile_size - WIDTH_CENTER_OFFSET,
-                        y: y as f32 * battlefield.tile_size - HEIGHT_CENTER_OFFSET,
-                        z: 0.0,
-                    },
+                    translation: battlefield.to_battlefield_coordinates(
+                        x as f32 * battlefield.tile_size,
+                        y as f32 * battlefield.tile_size,
+                        0.0,
+                    ),
                     ..default()
                 },
                 ..default()
@@ -252,6 +257,7 @@ fn create_battlefield_system(
 }
 
 fn create_units_system(
+    battlefield: Res<Battlefield>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
@@ -277,11 +283,11 @@ fn create_units_system(
         texture_atlas: archer_atlas_handle,
         sprite: TextureAtlasSprite::new(0),
         transform: Transform {
-            translation: Vec3 {
-                x: 2.0 * SPRITE_SIZE - WIDTH_CENTER_OFFSET,
-                y: 2.0 * SPRITE_SIZE - HEIGHT_CENTER_OFFSET,
-                z: 0.0,
-            },
+            translation: battlefield.to_battlefield_coordinates(
+                2.0 * SPRITE_SIZE,
+                2.0 * SPRITE_SIZE,
+                0.0,
+            ),
             ..default()
         },
         ..default()
