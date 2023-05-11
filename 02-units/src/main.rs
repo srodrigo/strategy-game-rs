@@ -97,14 +97,21 @@ impl Tile {
     }
 }
 
+const BATTLEFIELD_WIDTH_IN_TILES: usize = 13;
+const BATTLEFIELD_HEIGHT_IN_TILES: usize = 6;
+const TILE_SIZE: f32 = 16.0;
+const HALF_TILE_SIZE: f32 = TILE_SIZE / 2.0;
+const HALF_BATTLEFIELD_WIDTH_IN_PIXELS: f32 = BATTLEFIELD_WIDTH_IN_TILES as f32 * TILE_SIZE / 2.0;
+const HALF_BATTLEFIELD_HEIGHT_IN_PIXELS: f32 = BATTLEFIELD_HEIGHT_IN_TILES as f32 * TILE_SIZE / 2.0;
+const WIDTH_CENTER_OFFSET: f32 = HALF_BATTLEFIELD_WIDTH_IN_PIXELS - HALF_TILE_SIZE;
+const HEIGHT_CENTER_OFFSET: f32 = HALF_BATTLEFIELD_HEIGHT_IN_PIXELS - HALF_TILE_SIZE;
+
 fn create_battlefield_system(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     commands.spawn(Camera2dBundle::default());
-
-    const TILE_SIZE: f32 = 16.0;
 
     let tiles_handle = asset_server.load("Tiles/FullTileset.png");
     let tiles_atlas = TextureAtlas::from_grid(
@@ -117,8 +124,6 @@ fn create_battlefield_system(
     );
     let tiles_atlas_handle = texture_atlases.add(tiles_atlas);
 
-    const BATTLEFIELD_WIDTH_IN_TILES: usize = 13;
-    const BATTLEFIELD_HEIGHT_IN_TILES: usize = 6;
     let tile_map: [[Tile; BATTLEFIELD_WIDTH_IN_TILES]; BATTLEFIELD_HEIGHT_IN_TILES] = [
         [
             Tile::from_type(TileType::Brown1),
@@ -212,14 +217,6 @@ fn create_battlefield_system(
         ],
     ];
 
-    const HALF_TILE_SIZE: f32 = TILE_SIZE / 2.0;
-    const HALF_BATTLEFIELD_WIDTH_IN_PIXELS: f32 =
-        BATTLEFIELD_WIDTH_IN_TILES as f32 * TILE_SIZE / 2.0;
-    const HALF_BATTLEFIELD_HEIGHT_IN_PIXELS: f32 =
-        BATTLEFIELD_HEIGHT_IN_TILES as f32 * TILE_SIZE / 2.0;
-    const WIDTH_CENTER_OFFSET: f32 = HALF_BATTLEFIELD_WIDTH_IN_PIXELS - HALF_TILE_SIZE;
-    const HEIGHT_CENTER_OFFSET: f32 = HALF_BATTLEFIELD_HEIGHT_IN_PIXELS - HALF_TILE_SIZE;
-
     for (y, row) in tile_map.iter().enumerate() {
         for (x, col) in row.iter().enumerate() {
             commands.spawn(SpriteSheetBundle {
@@ -239,6 +236,41 @@ fn create_battlefield_system(
     }
 }
 
+fn create_units_system(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
+) {
+    const SPRITE_SIZE: f32 = 32.0;
+    const NUM_COLUMNS: usize = 4;
+    const NUM_ROWS: usize = 4;
+
+    let archer_blue_light_handle = asset_server.load("Sprite Sheets/Archer/Archer_Blue1.png");
+    let archer_atlas = TextureAtlas::from_grid(
+        archer_blue_light_handle,
+        Vec2::new(SPRITE_SIZE, SPRITE_SIZE),
+        NUM_COLUMNS,
+        NUM_ROWS,
+        None,
+        None,
+    );
+    let archer_atlas_handle = texture_atlases.add(archer_atlas);
+
+    commands.spawn(SpriteSheetBundle {
+        texture_atlas: archer_atlas_handle,
+        sprite: TextureAtlasSprite::new(0),
+        transform: Transform {
+            translation: Vec3 {
+                x: 0.0 * SPRITE_SIZE + SPRITE_SIZE / 4.0 - WIDTH_CENTER_OFFSET,
+                y: 0.0 * SPRITE_SIZE + SPRITE_SIZE / 4.0 - HEIGHT_CENTER_OFFSET,
+                z: 1.0,
+            },
+            ..default()
+        },
+        ..default()
+    });
+}
+
 fn main() {
     App::new()
         .insert_resource(Msaa::Off)
@@ -256,5 +288,6 @@ fn main() {
                 .set(ImagePlugin::default_nearest()),
         )
         .add_startup_system(create_battlefield_system)
+        .add_startup_system(create_units_system)
         .run();
 }
