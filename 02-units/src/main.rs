@@ -1,13 +1,111 @@
 use bevy::{prelude::*, window::WindowResolution};
 
+const BATTLEFIELD_WIDTH_IN_TILES: usize = 13;
+const BATTLEFIELD_HEIGHT_IN_TILES: usize = 6;
+
 #[derive(Resource)]
 struct Battlefield {
     tile_size: f32,
+    tile_map: [[Tile; BATTLEFIELD_WIDTH_IN_TILES]; BATTLEFIELD_HEIGHT_IN_TILES],
 }
 
 impl Battlefield {
     pub fn default() -> Self {
-        Self { tile_size: 16.0 }
+        Self {
+            tile_size: 16.0,
+            tile_map: [
+                [
+                    Tile::from_type(TileType::Brown1),
+                    Tile::from_type(TileType::BrownGreenLower1),
+                    Tile::from_type(TileType::BrownGreenLower2),
+                    Tile::from_type(TileType::BrownGreenLower2),
+                    Tile::from_type(TileType::BrownGreenLower3),
+                    Tile::from_type(TileType::BrownGreenLower5),
+                    Tile::from_type(TileType::Brown2),
+                    Tile::from_type(TileType::BrownGreenLower1),
+                    Tile::from_type(TileType::BrownGreenLower3),
+                    Tile::from_type(TileType::BrownGreenLower5),
+                    Tile::from_type(TileType::BrownGreenLower1),
+                    Tile::from_type(TileType::BrownGreenLower3),
+                    Tile::from_type(TileType::Brown4),
+                ],
+                [
+                    Tile::from_type(TileType::Brown3),
+                    Tile::from_type(TileType::BrownGreenMiddle1),
+                    Tile::from_type(TileType::Green2),
+                    Tile::from_type(TileType::BrownGreenUpper2),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::BrownGreenLower2),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::Green2),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::BrownGreenMiddle3),
+                    Tile::from_type(TileType::BrownGreenMiddle1),
+                    Tile::from_type(TileType::BrownGreenLower3),
+                ],
+                [
+                    Tile::from_type(TileType::BrownGreenMiddle4),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::BrownGreenMiddle3),
+                    Tile::from_type(TileType::BrownGreenLower5),
+                    Tile::from_type(TileType::BrownGreenMiddle1),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::Green4),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::Green2),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::Green2),
+                    Tile::from_type(TileType::BrownGreenUpper3),
+                ],
+                [
+                    Tile::from_type(TileType::BrownGreenMiddle4),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::Green4),
+                    Tile::from_type(TileType::Green2),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::BrownGreenMiddle3),
+                    Tile::from_type(TileType::BrownGreenUpper7),
+                    Tile::from_type(TileType::BrownGreenUpper1),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::BrownGreenMiddle6),
+                ],
+                [
+                    Tile::from_type(TileType::Brown2),
+                    Tile::from_type(TileType::BrownGreenUpper1),
+                    Tile::from_type(TileType::Green4),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::Green2),
+                    Tile::from_type(TileType::BrownGreenUpper2),
+                    Tile::from_type(TileType::Green1),
+                    Tile::from_type(TileType::Green3),
+                    Tile::from_type(TileType::BrownGreenLower2),
+                    Tile::from_type(TileType::Green4),
+                    Tile::from_type(TileType::Green2),
+                    Tile::from_type(TileType::BrownGreenMiddle6),
+                ],
+                [
+                    Tile::from_type(TileType::Brown1),
+                    Tile::from_type(TileType::Brown4),
+                    Tile::from_type(TileType::BrownGreenUpper5),
+                    Tile::from_type(TileType::BrownGreenUpper1),
+                    Tile::from_type(TileType::BrownGreenUpper3),
+                    Tile::from_type(TileType::BrownGreenUpper1),
+                    Tile::from_type(TileType::BrownGreenLower7),
+                    Tile::from_type(TileType::BrownGreenUpper3),
+                    Tile::from_type(TileType::BrownGreenUpper5),
+                    Tile::from_type(TileType::BrownGreenUpper1),
+                    Tile::from_type(TileType::BrownGreenUpper2),
+                    Tile::from_type(TileType::BrownGreenUpper3),
+                    Tile::from_type(TileType::Brown2),
+                ],
+            ],
+        }
     }
 }
 
@@ -108,8 +206,6 @@ impl Tile {
     }
 }
 
-const BATTLEFIELD_WIDTH_IN_TILES: usize = 13;
-const BATTLEFIELD_HEIGHT_IN_TILES: usize = 6;
 const TILE_SIZE: f32 = 16.0;
 const HALF_TILE_SIZE: f32 = TILE_SIZE / 2.0;
 const HALF_BATTLEFIELD_WIDTH_IN_PIXELS: f32 = BATTLEFIELD_WIDTH_IN_TILES as f32 * TILE_SIZE / 2.0;
@@ -136,100 +232,7 @@ fn create_battlefield_system(
     );
     let tiles_atlas_handle = texture_atlases.add(tiles_atlas);
 
-    let tile_map: [[Tile; BATTLEFIELD_WIDTH_IN_TILES]; BATTLEFIELD_HEIGHT_IN_TILES] = [
-        [
-            Tile::from_type(TileType::Brown1),
-            Tile::from_type(TileType::BrownGreenLower1),
-            Tile::from_type(TileType::BrownGreenLower2),
-            Tile::from_type(TileType::BrownGreenLower2),
-            Tile::from_type(TileType::BrownGreenLower3),
-            Tile::from_type(TileType::BrownGreenLower5),
-            Tile::from_type(TileType::Brown2),
-            Tile::from_type(TileType::BrownGreenLower1),
-            Tile::from_type(TileType::BrownGreenLower3),
-            Tile::from_type(TileType::BrownGreenLower5),
-            Tile::from_type(TileType::BrownGreenLower1),
-            Tile::from_type(TileType::BrownGreenLower3),
-            Tile::from_type(TileType::Brown4),
-        ],
-        [
-            Tile::from_type(TileType::Brown3),
-            Tile::from_type(TileType::BrownGreenMiddle1),
-            Tile::from_type(TileType::Green2),
-            Tile::from_type(TileType::BrownGreenUpper2),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::BrownGreenLower2),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::Green2),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::BrownGreenMiddle3),
-            Tile::from_type(TileType::BrownGreenMiddle1),
-            Tile::from_type(TileType::BrownGreenLower3),
-        ],
-        [
-            Tile::from_type(TileType::BrownGreenMiddle4),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::BrownGreenMiddle3),
-            Tile::from_type(TileType::BrownGreenLower5),
-            Tile::from_type(TileType::BrownGreenMiddle1),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::Green4),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::Green2),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::Green2),
-            Tile::from_type(TileType::BrownGreenUpper3),
-        ],
-        [
-            Tile::from_type(TileType::BrownGreenMiddle4),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::Green4),
-            Tile::from_type(TileType::Green2),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::BrownGreenMiddle3),
-            Tile::from_type(TileType::BrownGreenUpper7),
-            Tile::from_type(TileType::BrownGreenUpper1),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::BrownGreenMiddle6),
-        ],
-        [
-            Tile::from_type(TileType::Brown2),
-            Tile::from_type(TileType::BrownGreenUpper1),
-            Tile::from_type(TileType::Green4),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::Green2),
-            Tile::from_type(TileType::BrownGreenUpper2),
-            Tile::from_type(TileType::Green1),
-            Tile::from_type(TileType::Green3),
-            Tile::from_type(TileType::BrownGreenLower2),
-            Tile::from_type(TileType::Green4),
-            Tile::from_type(TileType::Green2),
-            Tile::from_type(TileType::BrownGreenMiddle6),
-        ],
-        [
-            Tile::from_type(TileType::Brown1),
-            Tile::from_type(TileType::Brown4),
-            Tile::from_type(TileType::BrownGreenUpper5),
-            Tile::from_type(TileType::BrownGreenUpper1),
-            Tile::from_type(TileType::BrownGreenUpper3),
-            Tile::from_type(TileType::BrownGreenUpper1),
-            Tile::from_type(TileType::BrownGreenLower7),
-            Tile::from_type(TileType::BrownGreenUpper3),
-            Tile::from_type(TileType::BrownGreenUpper5),
-            Tile::from_type(TileType::BrownGreenUpper1),
-            Tile::from_type(TileType::BrownGreenUpper2),
-            Tile::from_type(TileType::BrownGreenUpper3),
-            Tile::from_type(TileType::Brown2),
-        ],
-    ];
-
-    for (y, row) in tile_map.iter().enumerate() {
+    for (y, row) in battlefield.tile_map.iter().enumerate() {
         for (x, col) in row.iter().enumerate() {
             commands.spawn(SpriteSheetBundle {
                 texture_atlas: tiles_atlas_handle.clone(),
