@@ -109,8 +109,8 @@ impl Battlefield {
     }
 }
 
-const NUM_COLUMNS: usize = 20;
-const NUM_ROWS: usize = 20;
+const BATTLEFIELD_NUM_COLUMNS: usize = 20;
+const BATTLEFIELD_NUM_ROWS: usize = 20;
 
 enum TileType {
     Brown1,
@@ -149,58 +149,58 @@ impl Tile {
             TileType::Brown3 => Tile { index: 2 },
             TileType::Brown4 => Tile { index: 3 },
             TileType::Green1 => Tile {
-                index: 2 * NUM_COLUMNS,
+                index: 2 * BATTLEFIELD_NUM_COLUMNS,
             },
             TileType::Green2 => Tile {
-                index: 2 * NUM_COLUMNS + 1,
+                index: 2 * BATTLEFIELD_NUM_COLUMNS + 1,
             },
             TileType::Green3 => Tile {
-                index: 2 * NUM_COLUMNS + 2,
+                index: 2 * BATTLEFIELD_NUM_COLUMNS + 2,
             },
             TileType::Green4 => Tile {
-                index: 2 * NUM_COLUMNS + 3,
+                index: 2 * BATTLEFIELD_NUM_COLUMNS + 3,
             },
             TileType::BrownGreenUpper1 => Tile {
-                index: 7 * NUM_COLUMNS,
+                index: 7 * BATTLEFIELD_NUM_COLUMNS,
             },
             TileType::BrownGreenUpper2 => Tile {
-                index: 7 * NUM_COLUMNS + 1,
+                index: 7 * BATTLEFIELD_NUM_COLUMNS + 1,
             },
             TileType::BrownGreenUpper3 => Tile {
-                index: 7 * NUM_COLUMNS + 2,
+                index: 7 * BATTLEFIELD_NUM_COLUMNS + 2,
             },
             TileType::BrownGreenUpper5 => Tile {
-                index: 7 * NUM_COLUMNS + 4,
+                index: 7 * BATTLEFIELD_NUM_COLUMNS + 4,
             },
             TileType::BrownGreenUpper7 => Tile {
-                index: 7 * NUM_COLUMNS + 6,
+                index: 7 * BATTLEFIELD_NUM_COLUMNS + 6,
             },
             TileType::BrownGreenMiddle1 => Tile {
-                index: 8 * NUM_COLUMNS,
+                index: 8 * BATTLEFIELD_NUM_COLUMNS,
             },
             TileType::BrownGreenMiddle3 => Tile {
-                index: 8 * NUM_COLUMNS + 2,
+                index: 8 * BATTLEFIELD_NUM_COLUMNS + 2,
             },
             TileType::BrownGreenMiddle4 => Tile {
-                index: 8 * NUM_COLUMNS + 3,
+                index: 8 * BATTLEFIELD_NUM_COLUMNS + 3,
             },
             TileType::BrownGreenMiddle6 => Tile {
-                index: 8 * NUM_COLUMNS + 5,
+                index: 8 * BATTLEFIELD_NUM_COLUMNS + 5,
             },
             TileType::BrownGreenLower1 => Tile {
-                index: 9 * NUM_COLUMNS,
+                index: 9 * BATTLEFIELD_NUM_COLUMNS,
             },
             TileType::BrownGreenLower2 => Tile {
-                index: 9 * NUM_COLUMNS + 1,
+                index: 9 * BATTLEFIELD_NUM_COLUMNS + 1,
             },
             TileType::BrownGreenLower3 => Tile {
-                index: 9 * NUM_COLUMNS + 2,
+                index: 9 * BATTLEFIELD_NUM_COLUMNS + 2,
             },
             TileType::BrownGreenLower5 => Tile {
-                index: 9 * NUM_COLUMNS + 4,
+                index: 9 * BATTLEFIELD_NUM_COLUMNS + 4,
             },
             TileType::BrownGreenLower7 => Tile {
-                index: 9 * NUM_COLUMNS + 6,
+                index: 9 * BATTLEFIELD_NUM_COLUMNS + 6,
             },
         }
     }
@@ -225,8 +225,8 @@ fn create_battlefield_system(
     let tiles_atlas = TextureAtlas::from_grid(
         tiles_handle,
         Vec2::new(battlefield.tile_size, battlefield.tile_size),
-        NUM_COLUMNS,
-        NUM_ROWS,
+        BATTLEFIELD_NUM_COLUMNS,
+        BATTLEFIELD_NUM_ROWS,
         None,
         None,
     );
