@@ -1,19 +1,37 @@
 use bevy::{prelude::*, window::WindowResolution};
 
-const BATTLEFIELD_WIDTH_IN_TILES: usize = 13;
-const BATTLEFIELD_HEIGHT_IN_TILES: usize = 6;
+type TilemapDimensions = [[Tile; 13]; 6];
+
+struct Tilemap {
+    data: TilemapDimensions,
+    num_columns: usize,
+    num_rows: usize,
+}
+
+impl Tilemap {
+    pub fn new(data: TilemapDimensions) -> Self {
+        let num_columns = data.get(0).unwrap().len();
+        let num_rows = data.len();
+
+        Self {
+            data,
+            num_columns,
+            num_rows,
+        }
+    }
+}
 
 #[derive(Resource)]
 struct Battlefield {
     tile_size: f32,
-    tile_map: [[Tile; BATTLEFIELD_WIDTH_IN_TILES]; BATTLEFIELD_HEIGHT_IN_TILES],
+    tilemap: Tilemap,
 }
 
 impl Battlefield {
     pub fn default() -> Self {
         Self {
             tile_size: 16.0,
-            tile_map: [
+            tilemap: Tilemap::new([
                 [
                     Tile::from_type(TileType::Brown1),
                     Tile::from_type(TileType::BrownGreenLower1),
@@ -104,16 +122,16 @@ impl Battlefield {
                     Tile::from_type(TileType::BrownGreenUpper3),
                     Tile::from_type(TileType::Brown2),
                 ],
-            ],
+            ]),
         }
     }
 
     pub fn to_battlefield_coordinates(&self, x: f32, y: f32, z: f32) -> Vec3 {
         let half_tile_size: f32 = self.tile_size / 2.0;
         let half_battlefield_width_in_pixels: f32 =
-            BATTLEFIELD_WIDTH_IN_TILES as f32 * self.tile_size / 2.0;
+            self.tilemap.num_columns as f32 * self.tile_size / 2.0;
         let half_battlefield_height_in_pixels: f32 =
-            BATTLEFIELD_HEIGHT_IN_TILES as f32 * self.tile_size / 2.0;
+            self.tilemap.num_rows as f32 * self.tile_size / 2.0;
         let width_center_offset: f32 = half_battlefield_width_in_pixels - half_tile_size;
         let height_center_offset: f32 = half_battlefield_height_in_pixels - half_tile_size;
 
@@ -237,7 +255,7 @@ fn create_battlefield_system(
     );
     let tiles_atlas_handle = texture_atlases.add(tiles_atlas);
 
-    for (y, row) in battlefield.tile_map.iter().enumerate() {
+    for (y, row) in battlefield.tilemap.data.iter().enumerate() {
         for (x, col) in row.iter().enumerate() {
             commands.spawn(SpriteSheetBundle {
                 texture_atlas: tiles_atlas_handle.clone(),
