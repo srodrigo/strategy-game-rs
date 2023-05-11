@@ -1,5 +1,16 @@
 use bevy::{prelude::*, window::WindowResolution};
 
+#[derive(Resource)]
+struct Battlefield {
+    tile_size: f32,
+}
+
+impl Battlefield {
+    pub fn default() -> Self {
+        Self { tile_size: 16.0 }
+    }
+}
+
 const NUM_COLUMNS: usize = 20;
 const NUM_ROWS: usize = 20;
 
@@ -107,6 +118,7 @@ const WIDTH_CENTER_OFFSET: f32 = HALF_BATTLEFIELD_WIDTH_IN_PIXELS - HALF_TILE_SI
 const HEIGHT_CENTER_OFFSET: f32 = HALF_BATTLEFIELD_HEIGHT_IN_PIXELS - HALF_TILE_SIZE;
 
 fn create_battlefield_system(
+    battlefield: Res<Battlefield>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
@@ -116,7 +128,7 @@ fn create_battlefield_system(
     let tiles_handle = asset_server.load("Tiles/FullTileset.png");
     let tiles_atlas = TextureAtlas::from_grid(
         tiles_handle,
-        Vec2::new(TILE_SIZE, TILE_SIZE),
+        Vec2::new(battlefield.tile_size, battlefield.tile_size),
         NUM_COLUMNS,
         NUM_ROWS,
         None,
@@ -224,8 +236,8 @@ fn create_battlefield_system(
                 sprite: TextureAtlasSprite::new(col.index),
                 transform: Transform {
                     translation: Vec3 {
-                        x: x as f32 * TILE_SIZE - WIDTH_CENTER_OFFSET,
-                        y: y as f32 * TILE_SIZE - HEIGHT_CENTER_OFFSET,
+                        x: x as f32 * battlefield.tile_size - WIDTH_CENTER_OFFSET,
+                        y: y as f32 * battlefield.tile_size - HEIGHT_CENTER_OFFSET,
                         z: 0.0,
                     },
                     ..default()
@@ -276,6 +288,7 @@ fn create_units_system(
 fn main() {
     App::new()
         .insert_resource(Msaa::Off)
+        .insert_resource(Battlefield::default())
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
