@@ -274,6 +274,30 @@ fn create_battlefield_system(
     }
 }
 
+fn load_unit(
+    sprite_sheet: &str,
+    asset_server: &Res<AssetServer>,
+    texture_atlases: &mut ResMut<Assets<TextureAtlas>>,
+) -> Handle<TextureAtlas> {
+    const SPRITE_SIZE: f32 = 16.0;
+    const NUM_COLUMNS: usize = 8;
+    const NUM_ROWS: usize = 14;
+    const OFFSET: f32 = 8.0;
+    const PADDING: f32 = 16.0;
+
+    let sprite_handle = asset_server.load(sprite_sheet);
+    let texture_atlas = TextureAtlas::from_grid(
+        sprite_handle,
+        Vec2::new(SPRITE_SIZE, SPRITE_SIZE),
+        NUM_COLUMNS,
+        NUM_ROWS,
+        Some(Vec2::new(PADDING, PADDING)),
+        Some(Vec2::new(OFFSET, OFFSET)),
+    );
+
+    return texture_atlases.add(texture_atlas);
+}
+
 fn create_units_system(
     battlefield: Res<Battlefield>,
     mut commands: Commands,
@@ -281,29 +305,40 @@ fn create_units_system(
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
     const SPRITE_SIZE: f32 = 16.0;
-    const NUM_COLUMNS: usize = 8;
-    const NUM_ROWS: usize = 14;
-    const OFFSET: f32 = 8.0;
-    const PADDING: f32 = 16.0;
 
-    let archer_blue_light_handle = asset_server.load("Sprite Sheets/Archer/Archer_Blue1.png");
-    let archer_atlas = TextureAtlas::from_grid(
-        archer_blue_light_handle,
-        Vec2::new(SPRITE_SIZE, SPRITE_SIZE),
-        NUM_COLUMNS,
-        NUM_ROWS,
-        Some(Vec2::new(PADDING, PADDING)),
-        Some(Vec2::new(OFFSET, OFFSET)),
+    let archer_blue_light_atlas_handle = load_unit(
+        "Sprite Sheets/Archer/Archer_Blue1.png",
+        &asset_server,
+        &mut texture_atlases,
     );
-    let archer_atlas_handle = texture_atlases.add(archer_atlas);
 
     commands.spawn(SpriteSheetBundle {
-        texture_atlas: archer_atlas_handle,
+        texture_atlas: archer_blue_light_atlas_handle,
         sprite: TextureAtlasSprite::new(0),
         transform: Transform {
             translation: battlefield.to_battlefield_coordinates(
                 2.0 * SPRITE_SIZE,
                 2.0 * SPRITE_SIZE,
+                0.0,
+            ),
+            ..default()
+        },
+        ..default()
+    });
+
+    let wizard_blue_dark_atlas_handle = load_unit(
+        "Sprite Sheets/Wizard/Wizard_Blue3.png",
+        &asset_server,
+        &mut texture_atlases,
+    );
+
+    commands.spawn(SpriteSheetBundle {
+        texture_atlas: wizard_blue_dark_atlas_handle,
+        sprite: TextureAtlasSprite::new(0),
+        transform: Transform {
+            translation: battlefield.to_battlefield_coordinates(
+                4.0 * SPRITE_SIZE,
+                3.0 * SPRITE_SIZE,
                 0.0,
             ),
             ..default()
