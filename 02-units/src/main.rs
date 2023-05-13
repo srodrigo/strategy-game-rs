@@ -279,11 +279,9 @@ fn load_unit(
     asset_server: &Res<AssetServer>,
     texture_atlases: &mut ResMut<Assets<TextureAtlas>>,
 ) -> Handle<TextureAtlas> {
-    const SPRITE_SIZE: f32 = 16.0;
+    const SPRITE_SIZE: f32 = 32.0;
     const NUM_COLUMNS: usize = 8;
     const NUM_ROWS: usize = 14;
-    const OFFSET: f32 = 8.0;
-    const PADDING: f32 = 16.0;
 
     let sprite_handle = asset_server.load(sprite_sheet);
     let texture_atlas = TextureAtlas::from_grid(
@@ -291,8 +289,8 @@ fn load_unit(
         Vec2::new(SPRITE_SIZE, SPRITE_SIZE),
         NUM_COLUMNS,
         NUM_ROWS,
-        Some(Vec2::new(PADDING, PADDING)),
-        Some(Vec2::new(OFFSET, OFFSET)),
+        None,
+        None,
     );
 
     return texture_atlases.add(texture_atlas);
@@ -305,7 +303,7 @@ fn spawn_unit(
     battlefield: &Res<Battlefield>,
     commands: &mut Commands,
 ) {
-    const SPRITE_SIZE: f32 = 16.0;
+    const SPRITE_SIZE: f32 = 32.0;
 
     commands.spawn(SpriteSheetBundle {
         texture_atlas: atlas_handle,
@@ -330,24 +328,12 @@ fn create_units_system(
 ) {
     spawn_unit(
         load_unit(
-            "Sprite Sheets/Archer/Archer_Blue1.png",
+            "Sprite Sheets/Archer/Archer_Red2.png",
             &asset_server,
             &mut texture_atlases,
         ),
-        2,
-        2,
-        &battlefield,
-        &mut commands,
-    );
-
-    spawn_unit(
-        load_unit(
-            "Sprite Sheets/Wizard/Wizard_Blue3.png",
-            &asset_server,
-            &mut texture_atlases,
-        ),
-        4,
-        3,
+        0,
+        0,
         &battlefield,
         &mut commands,
     );
