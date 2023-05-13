@@ -300,6 +300,7 @@ fn spawn_unit(
     atlas_handle: Handle<TextureAtlas>,
     column_in_battlefield: usize,
     row_in_battlefield: usize,
+    flip: bool,
     battlefield: &Res<Battlefield>,
     commands: &mut Commands,
 ) {
@@ -314,6 +315,11 @@ fn spawn_unit(
                 row_in_battlefield as f32 * SPRITE_SIZE + SPRITE_SIZE / 4.0,
                 1.0,
             ),
+            rotation: if flip {
+                Quat::from_rotation_y(std::f32::consts::PI)
+            } else {
+                Quat::default()
+            },
             ..default()
         },
         ..default()
@@ -334,6 +340,7 @@ fn create_units_system(
         ),
         0,
         0,
+        false,
         &battlefield,
         &mut commands,
     );
@@ -344,8 +351,87 @@ fn create_units_system(
             &asset_server,
             &mut texture_atlases,
         ),
-        2,
         1,
+        1,
+        false,
+        &battlefield,
+        &mut commands,
+    );
+
+    spawn_unit(
+        load_unit(
+            "Sprite Sheets/LanceKnight/LanceKnight_Blue.png",
+            &asset_server,
+            &mut texture_atlases,
+        ),
+        2,
+        2,
+        false,
+        &battlefield,
+        &mut commands,
+    );
+
+    spawn_unit(
+        load_unit(
+            "Sprite Sheets/SwordFighter/SwordFighter_LongHair_Blue1.png",
+            &asset_server,
+            &mut texture_atlases,
+        ),
+        2,
+        0,
+        false,
+        &battlefield,
+        &mut commands,
+    );
+
+    spawn_unit(
+        load_unit(
+            "Sprite Sheets/Archer/Archer_Red1.png",
+            &asset_server,
+            &mut texture_atlases,
+        ),
+        5,
+        1,
+        true,
+        &battlefield,
+        &mut commands,
+    );
+
+    spawn_unit(
+        load_unit(
+            "Sprite Sheets/Wizard/Wizard_Red3.png",
+            &asset_server,
+            &mut texture_atlases,
+        ),
+        5,
+        0,
+        true,
+        &battlefield,
+        &mut commands,
+    );
+
+    spawn_unit(
+        load_unit(
+            "Sprite Sheets/LanceKnight/LanceKnight_Red.png",
+            &asset_server,
+            &mut texture_atlases,
+        ),
+        4,
+        2,
+        true,
+        &battlefield,
+        &mut commands,
+    );
+
+    spawn_unit(
+        load_unit(
+            "Sprite Sheets/SwordFighter/SwordFighter_LongHair_Red1.png",
+            &asset_server,
+            &mut texture_atlases,
+        ),
+        3,
+        1,
+        true,
         &battlefield,
         &mut commands,
     );
